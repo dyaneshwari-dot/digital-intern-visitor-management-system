@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Jeevan Ankur Trust{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-text">
+        <span class="tag">Digital Management System</span>
+
+        <h1>Digital Intern & Visitor Management System</h1>
+
+        <p>
+            A simple mobile-friendly system for registration, time-slot booking,
+            check-in/check-out and digital visit records.
+        </p>
+
+        <div class="hero-actions">
+            <a class="btn primary" href="{{ url_for('login') }}">
+                Existing User Login
+            </a>
+
+            <a class="btn secondary" href="{{ url_for('register') }}">
+                New User Registration
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-card">
+
+        <div class="circle-icon">Mobile</div>
+
+        <h3>Mobile Friendly</h3>
+
+        <p>
+            No laptop is compulsory. The system can be opened from a smartphone.
+        </p>
+
+        <div class="mini-status">
+            <span class="dot green"></span>
+            Available
+        </div>
+
+        <div class="mini-status">
+            <span class="dot red"></span>
+            Booked
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <h2>How the system works</h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <span>01</span>
+            <h3>Register</h3>
+            <p>New interns enter their details once.</p>
+        </div>
+
+        <div class="feature-card">
+            <span>02</span>
+            <h3>Login</h3>
+            <p>Existing users can view their saved profile.</p>
+        </div>
+
+        <div class="feature-card">
+            <span>03</span>
+            <h3>Book a Slot</h3>
+            <p>Choose a date and an available time slot.</p>
+        </div>
+
+        <div class="feature-card">
+            <span>04</span>
+            <h3>Check-in/out</h3>
+            <p>Record arrival and departure digitally.</p>
+        </div>
+
+        <div class="feature-card">
+            <span>05</span>
+            <h3>Admin Records</h3>
+            <p>NGO staff can monitor all visits.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="info-banner">
+
+    <h2>Why this project?</h2>
+
+    <p>
+        It replaces a manual register with an organized digital record system
+        and helps the NGO know who is visiting, when they are visiting and
+        whether a time slot is occupied.
+    </p>
+
+</section>
+
+{% endblock %}

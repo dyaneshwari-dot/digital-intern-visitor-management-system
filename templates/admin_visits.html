@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}All Visit Records{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <span class="tag">Complete Records</span>
+        <h1>All Intern & Visitor Records</h1>
+        <p class="muted">Digital replacement for the manual register.</p>
+    </div>
+</div>
+
+<!-- MONTHLY FILTER -->
+
+<div class="monthly-tools">
+
+<form method="GET" action="{{ url_for('admin_visits') }}">
+
+    <div class="month-field">
+
+        <label for="month">Select Month</label>
+
+        <select id="month" name="month" required>
+
+            <option value="">-- Select Month --</option>
+
+            <option value="2026-09"
+                {% if selected_month == "2026-09" %}selected{% endif %}>
+                September 2026
+            </option>
+
+            <option value="2026-10"
+                {% if selected_month == "2026-10" %}selected{% endif %}>
+                October 2026
+            </option>
+
+            <option value="2026-11"
+                {% if selected_month == "2026-11" %}selected{% endif %}>
+                November 2026
+            </option>
+
+            <option value="2026-12"
+                {% if selected_month == "2026-12" %}selected{% endif %}>
+                December 2026
+            </option>
+
+            <option value="2027-01"
+                {% if selected_month == "2027-01" %}selected{% endif %}>
+                January 2027
+            </option>
+
+            <option value="2027-02"
+                {% if selected_month == "2027-02" %}selected{% endif %}>
+                February 2027
+            </option>
+
+            <option value="2027-03"
+                {% if selected_month == "2027-03" %}selected{% endif %}>
+                March 2027
+            </option>
+
+            <option value="2027-04"
+                {% if selected_month == "2027-04" %}selected{% endif %}>
+                April 2027
+            </option>
+
+            <option value="2027-05"
+                {% if selected_month == "2027-05" %}selected{% endif %}>
+                May 2027
+            </option>
+
+            <option value="2027-06"
+                {% if selected_month == "2027-06" %}selected{% endif %}>
+                June 2027
+            </option>
+
+            <option value="2027-07"
+                {% if selected_month == "2027-07" %}selected{% endif %}>
+                July 2027
+            </option>
+
+            <option value="2027-08"
+                {% if selected_month == "2027-08" %}selected{% endif %}>
+                August 2027
+            </option>
+
+        </select>
+
+    </div>
+
+    <button type="submit" class="btn secondary">
+        View Monthly Records
+    </button>
+
+</form>
+
+{% if selected_month %}
+
+    <a
+        href="{{ url_for('download_monthly_records', month=selected_month) }}"
+        class="btn primary"
+    >
+        📥 Download Monthly Excel
+    </a>
+
+{% else %}
+
+    <span class="btn primary disabled-btn">
+        📥 Select Month to Download
+    </span>
+
+{% endif %}
+
+
+</div>
+
+<!-- ALL VISIT RECORDS TABLE -->
+
+<div class="table-wrap">
+
+<table>
+
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>College / Organisation</th>
+            <th>Time</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Status</th>
+            <th>Attendance Photo</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for v in visits %}
+
+        <tr>
+
+            <td>{{ v.visit_date }}</td>
+
+            <td>{{ v.name }}</td>
+
+            <td>{{ v.mobile }}</td>
+
+            <td>{{ v.college or '—' }}</td>
+
+            <td>
+                {{ v.start_time }} - {{ v.end_time }}
+            </td>
+
+            <td>
+                {{ v.check_in.strftime('%d-%m-%Y %H:%M')
+                   if v.check_in else '—' }}
+            </td>
+
+            <td>
+                {{ v.check_out.strftime('%d-%m-%Y %H:%M')
+                   if v.check_out else '—' }}
+            </td>
+
+            <td>
+                <span class="status {{ v.status|lower }}">
+                    {{ v.status }}
+                </span>
+            </td>
+
+            <td>
+
+                {% if v.attendance_photo %}
+
+                    <a
+                        href="{{ url_for(
+                            'static',
+                            filename='uploads/attendance/' + v.attendance_photo
+                        ) }}"
+                        target="_blank"
+                        class="text-link"
+                    >
+                        View Photo
+                    </a>
+
+                {% else %}
+
+                    —
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    {% else %}
+
+        <tr>
+            <td colspan="9" class="empty-cell">
+                No records found.
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+</div>
+
+{% endblock %}

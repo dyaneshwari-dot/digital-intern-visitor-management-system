@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-icon">🛡️</div>
+        <h1>NGO Admin Login</h1>
+        <p class="muted">For authorised Jeevan Ankur Trust staff.</p>
+
+        <form method="POST">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Admin username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Admin password" required>
+
+            <button class="btn primary full" type="submit">Login</button>
+        </form>
+
+        <div class="demo-note">
+            Project demo: <strong>admin / admin123</strong>
+        </div>
+    </div>
+</div>
+{% endblock %}

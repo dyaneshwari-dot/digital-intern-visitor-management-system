@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}New User Registration{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card wide">
+        <div class="form-icon">📝</div>
+        <h1>New User Registration</h1>
+        <p class="muted">Create your digital profile before booking a visit.</p>
+
+        <form method="POST" class="two-col-form">
+            <div>
+                <label>Full Name *</label>
+                <input type="text" name="name" placeholder="Enter full name" required>
+            </div>
+
+            <div>
+                <label>Mobile Number *</label>
+                <input type="text" name="mobile" placeholder="Enter mobile number" required>
+            </div>
+
+            <div>
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Enter email (optional)">
+            </div>
+
+            <div>
+                <label>College / Organisation</label>
+                <input type="text" name="college" placeholder="College or organisation">
+            </div>
+
+            <div>
+                <label>Purpose of Visit</label>
+                <select name="purpose">
+                    <option>Internship</option>
+                    <option>Volunteer</option>
+                    <option>Project Visit</option>
+                    <option>Visitor</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Password *</label>
+                <input type="password" name="password" placeholder="Create password" required>
+            </div>
+
+            <div class="full-span">
+                <button class="btn primary full" type="submit">Create Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

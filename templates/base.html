@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Jeevan Ankur Trust{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <a href="{{ url_for('index') }}" class="brand">
+
+        <div class="brand-mark">🌱</div>
+
+        <div>
+            <strong>Jeevan Ankur Trust</strong>
+            <small>Digital Intern & Visitor Management</small>
+        </div>
+
+    </a>
+
+    <nav>
+
+        {% if session.get('user_id') %}
+
+            <a class="nav-button"
+               href="{{ url_for('index') }}">
+                Home
+            </a>
+
+            <a class="nav-button"
+               href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a class="nav-button"
+               href="{{ url_for('book') }}">
+                Book Slot
+            </a>
+
+            <a class="nav-button"
+               href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        {% elif session.get('admin_id') %}
+
+            <a class="nav-button"
+              href="{{ url_for('index') }}">
+              Home
+            </a>
+
+            <a class="nav-button"
+              href="{{ url_for('admin_dashboard') }}">
+              Admin Dashboard
+            </a>
+
+            <a class="nav-button"
+              href="{{ url_for('admin_visits') }}">
+              All Visits
+            </a>
+
+            <a class="nav-button"
+                href="{{ url_for('admin_logout') }}">
+                Admin Logout
+            </a>
+
+        {% else %}
+
+            <a class="nav-button"
+               href="{{ url_for('index') }}">
+                Home
+            </a>
+
+            <a class="nav-button"
+               href="{{ url_for('login') }}">
+                Existing User
+            </a>
+
+            <a class="nav-button"
+               href="{{ url_for('register') }}">
+                New Registration
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+
+<footer>
+    © 2026 Jeevan Ankur Trust | Digital Intern & Visitor Management System
+    <span>|</span>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
+</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Existing User Login{% endblock %}
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-icon">🔐</div>
+        <h1>Existing User Login</h1>
+        <p class="muted">Login to view your information and manage visits.</p>
+
+        <form method="POST">
+            <label>Mobile Number</label>
+            <input type="text" name="mobile" placeholder="Enter mobile number" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+
+            <button class="btn primary full" type="submit">Login</button>
+        </form>
+
+        <p class="bottom-link">New user?
+            <a href="{{ url_for('register') }}">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

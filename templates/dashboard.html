@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}User Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <span class="tag">Existing User</span>
+        <h1>Welcome, {{ user.name }} 👋</h1>
+        <p class="muted">Your profile and visit records are shown below.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('book') }}">+ Book New Slot</a>
+</div>
+
+<!-- PROFILE -->
+
+<div class="profile-grid">
+
+    <!-- LEFT: USER PROFILE -->
+    <div class="profile-card">
+
+        <div class="avatar">
+            {{ user.name[0]|upper }}
+        </div>
+
+        <div>
+            <h2>{{ user.name }}</h2>
+
+            <p>{{ user.mobile }}</p>
+
+            <p>{{ user.email or 'Email not added' }}</p>
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT: USER DETAILS -->
+    <div class="profile-details">
+
+        <div>
+            <small>College / Organisation</small>
+
+            <strong>
+                {{ user.college or 'Not added' }}
+            </strong>
+        </div>
+
+        <div>
+            <small>Purpose</small>
+
+            <strong>
+                {{ user.purpose or 'Not specified' }}
+            </strong>
+        </div>
+
+    </div>
+</div>
+
+<!-- ATTENDANCE SECTION -->
+
+<section class="section">
+
+
+<div class="section-title-row">
+    <div>
+        <h2>Today's Attendance</h2>
+        <p class="muted">
+            Mark your attendance and upload today's visit photo.
+        </p>
+    </div>
+</div>
+
+{% set ns = namespace(today_attendance=none) %}
+
+{% for a in attendance %}
+    {% if a.attendance_date|string == now_date|string %}
+        {% set ns.today_attendance = a %}
+    {% endif %}
+{% endfor %}
+
+{% set today_attendance = ns.today_attendance %}
+
+{% if today_attendance %}
+
+    <div class="attendance-card">
+        <div class="attendance-icon">✅</div>
+
+        <div>
+            <h3>Attendance Already Marked</h3>
+            <p class="muted">
+                Your attendance for today has been successfully recorded.
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                {{ today_attendance.attendance_date }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                <span class="status present">
+                    {{ today_attendance.status }}
+                </span>
+            </p>
+
+            {% if today_attendance.photo %}
+                <p>
+                    <strong>Photo:</strong>
+                    <a
+                        href="{{ url_for('static', filename='uploads/attendance/' + today_attendance.photo) }}"
+                        target="_blank"
+                        class="text-link"
+                    >
+                        View Uploaded Photo
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+{% else %}
+
+    <form
+        method="POST"
+        action="{{ url_for('mark_attendance') }}"
+        enctype="multipart/form-data"
+        class="attendance-form"
+    >
+
+        <div class="form-group">
+            <label for="attendance-photo">
+                Upload Today's Photo
+            </label>
+
+            <input
+                type="file"
+                id="attendance-photo"
+                name="photo"
+                accept=".jpg,.jpeg,.png,.webp"
+                required
+            >
+
+            <small class="muted">
+                JPG, JPEG, PNG or WEBP only
+            </small>
+        </div>
+
+        <div class="attendance-info">
+            <strong>📅 Today's Attendance</strong>
+            <p class="muted">
+                Your attendance date will be recorded automatically.
+            </p>
+        </div>
+
+        <button
+            type="submit"
+            class="btn primary"
+        >
+            ✅ Mark Present
+        </button>
+
+    </form>
+
+{% endif %}
+
+
+</section>
+
+<!-- VISIT HISTORY -->
+
+<section class="section">
+
+
+<div class="section-title-row">
+    <h2>My Visit History</h2>
+    <a href="{{ url_for('book') }}" class="text-link">
+        Book another slot →
+    </a>
+</div>
+
+{% if visits %}
+
+<div class="table-wrap">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Purpose</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for v in visits %}
+
+            <tr>
+
+                <td>{{ v.visit_date }}</td>
+
+                <td>
+                    {{ '%02d:%02d'|format(
+                        v.start_time.seconds // 3600,
+                        (v.start_time.seconds % 3600) // 60
+                    ) }}
+                    -
+                    {{ '%02d:%02d'|format(
+                        v.end_time.seconds // 3600,
+                        (v.end_time.seconds % 3600) // 60
+                    ) }}
+                </td>
+
+                <td>{{ v.purpose }}</td>
+
+                <td>
+                    {{ v.check_in.strftime('%H:%M') if v.check_in else '—' }}
+                </td>
+
+                <td>
+                    {{ v.check_out.strftime('%H:%M') if v.check_out else '—' }}
+                </td>
+
+                <td>
+                    <span class="status {{ v.status|lower }}">
+                        {{ v.status }}
+                    </span>
+                </td>
+
+                <td>
+
+                    {% if v.status == 'Booked' %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('checkin', visit_id=v.id) }}"
+                    >
+                        <button
+                            class="small-btn"
+                            type="submit"
+                        >
+                            Check-in
+                        </button>
+                    </form>
+
+                    {% elif v.status == 'Present' %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('checkout', visit_id=v.id) }}"
+                    >
+                        <button
+                            class="small-btn green-btn"
+                            type="submit"
+                        >
+                            Check-out
+                        </button>
+                    </form>
+
+                    {% else %}
+
+                    <span class="muted">
+                        Completed
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+
+    <div>📅</div>
+
+    <h3>No visits yet</h3>
+
+    <p>Book your first time slot.</p>
+
+    <a
+        class="btn primary"
+        href="{{ url_for('book') }}"
+    >
+        Book a Slot
+    </a>
+
+</div>
+
+{% endif %}
+
+</section>
+
+{% endblock %}

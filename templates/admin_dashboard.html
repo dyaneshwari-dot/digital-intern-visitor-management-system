@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="tag">NGO Staff</span>
+        <h1>Admin Dashboard</h1>
+        <p class="muted">Monitor today's interns and visitors.</p>
+    </div>
+    <a class="btn secondary" href="{{ url_for('admin_visits') }}">View All Records</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card blue"><span>👥</span><small>Total Users</small><strong>{{ total_users }}</strong></div>
+    <div class="stat-card green"><span>🟢</span><small>Currently Present</small><strong>{{ present_today }}</strong></div>
+    <div class="stat-card orange"><span>📅</span><small>Booked Today</small><strong>{{ booked_today }}</strong></div>
+    <div class="stat-card purple"><span>🧾</span><small>Today's Visits</small><strong>{{ today_visits }}</strong></div>
+</div>
+
+<section class="section">
+    <div class="section-title-row">
+        <h2>Today's Schedule</h2>
+        <span class="date-pill">{{ now if now else 'Today' }}</span>
+    </div>
+
+    {% if schedule %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>College</th>
+                    <th>Time</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for v in schedule %}
+                <tr>
+                    <td><strong>{{ v.name }}</strong><br><small>{{ v.mobile }}</small></td>
+                    <td>{{ v.college or '—' }}</td>
+                    <td>{{ v.start_time }} - {{ v.end_time }}</td>
+                    <td>{{ v.check_in.strftime('%H:%M') if v.check_in else '—' }}</td>
+                    <td>{{ v.check_out.strftime('%H:%M') if v.check_out else '—' }}</td>
+                    <td><span class="status {{ v.status|lower }}">{{ v.status }}</span></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div>📋</div>
+        <h3>No visits scheduled today</h3>
+        <p>Bookings will appear here automatically.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

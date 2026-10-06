@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Book Time Slot{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <span class="tag">Smart Time Slots</span>
+        <h1>Book a Time Slot</h1>
+        <p class="muted">Green = Available &nbsp; • &nbsp; Red = Booked</p>
+    </div>
+</div>
+
+<div class="booking-layout">
+
+    <div class="form-card">
+
+        <form method="POST" id="bookingForm">
+
+            <label>Select Date</label>
+
+            <input
+                type="date"
+                name="visit_date"
+                id="visitDate"
+                value="{{ selected_date }}"
+                min="{{ selected_date }}"
+                required
+            >
+
+            <label>Purpose of Visit</label>
+
+            <select name="purpose">
+                <option>Internship</option>
+                <option>Volunteer</option>
+                <option>Project Visit</option>
+                <option>Visitor</option>
+                <option>Other</option>
+            </select>
+
+            <input type="hidden" name="start_time" id="startTime">
+            <input type="hidden" name="end_time" id="endTime">
+
+            <div class="selected-slot" id="selectedSlot">
+                Select an available time slot
+            </div>
+
+            <button class="btn primary full" id="confirmBtn" type="submit" disabled>
+                Confirm Booking
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="slot-card">
+
+        <div class="slot-header">
+            <h2>Today's Available Slots</h2>
+            <span id="slotDateLabel">{{ selected_date }}</span>
+        </div>
+
+        <div id="slotList">
+
+            {% for start, end in slots %}
+
+                {% set row = booked.get(start) %}
+
+                <button
+                    type="button"
+                    class="slot {% if row %}booked{% else %}available{% endif %}"
+                    {% if not row %}
+                        data-start="{{ start }}"
+                        data-end="{{ end }}"
+                    {% else %}
+                        disabled
+                    {% endif %}
+                >
+
+                    <span class="dot {% if row %}red{% else %}green{% endif %}"></span>
+
+                    <span>{{ start }} - {{ end }}</span>
+
+                    <strong>
+                        {% if row %}
+                            Booked
+                        {% else %}
+                            Available
+                        {% endif %}
+                    </strong>
+
+                    {% if row %}
+                        <small>({{ row.name }})</small>
+                    {% endif %}
+
+                </button>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="legend">
+
+            <span>
+                <i class="dot green"></i>
+                Available
+            </span>
+
+            <span>
+                <i class="dot red"></i>
+                Booked
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+const visitDate = document.getElementById("visitDate");
+
+visitDate.addEventListener("change", function () {
+
+    window.location.href =
+        "{{ url_for('book') }}?visit_date=" + this.value;
+
+});
+
+
+document.querySelectorAll(".slot.available").forEach(slot => {
+
+    slot.addEventListener("click", function () {
+
+        document.querySelectorAll(".slot.available").forEach(s => {
+            s.classList.remove("selected");
+        });
+
+        this.classList.add("selected");
+
+        document.getElementById("startTime").value =
+            this.dataset.start;
+
+        document.getElementById("endTime").value =
+            this.dataset.end;
+
+        document.getElementById("selectedSlot").textContent =
+            this.dataset.start + " - " + this.dataset.end;
+
+        document.getElementById("confirmBtn").disabled = false;
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
