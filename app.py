@@ -1761,28 +1761,14 @@ def admin_logout():
 # RUN APPLICATION
 # ==========================================================
 
+# Initialize database when application starts
+try:
+    init_db()
+except Error as e:
+    print("\nMySQL connection failed.")
+    print("Make sure MySQL is running and the database exists.")
+    print("Error:", e)
+
+
 if __name__ == "__main__":
-
-    try:
-
-        init_db()
-
-        app.run(
-            debug=True
-        )
-
-    except Error as e:
-
-        print(
-            "\nMySQL connection failed."
-        )
-
-        print(
-            "Make sure MySQL is running and "
-            "the database 'jeevan_ankur_db' exists."
-        )
-
-        print(
-            "Error:",
-            e
-        )
+    app.run(debug=True)
